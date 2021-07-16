@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Post;
-use App\User;
-use App\Tag;
+use App\Models\Post;
+use App\Models\User;
+use App\Models\Tag;
 use Illuminate\Database\Seeder;
 
 class PostsToUsersSeeder extends Seeder

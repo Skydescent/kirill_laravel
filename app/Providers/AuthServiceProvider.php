@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Post;
+use App\Models\Task;
+use App\Policies\PostPolicy;
+use App\Policies\TaskPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -15,8 +19,8 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        \App\Task::class => \App\Policies\TaskPolicy::class,
-        \App\Post::class => \App\Policies\PostPolicy::class
+        Task::class => TaskPolicy::class,
+        Post::class => PostPolicy::class
     ];
 
     /**
@@ -30,7 +34,7 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         Auth::viaRequest('is-admin', function () {
-            return auth()->user()->isAdmin() ? auth()->user() : null;
+            return cachedUser()->isAdmin() ? cachedUser() : null;
         });
 
     }

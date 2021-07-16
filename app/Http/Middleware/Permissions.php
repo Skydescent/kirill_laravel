@@ -17,7 +17,6 @@ class Permissions
     public function handle(Request $request, Closure $next, $guard = null)
     {
         $user = $request->user();
-        $actions = $request->route()->getAction();
 
         if (!$user->isAdmin()) {
             flash("Доступ запрещён", "danger");

@@ -2,6 +2,8 @@
 
 namespace App\Events;
 
+use App\Models\Post;
+use App\Models\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -13,9 +15,9 @@ class PostUpdated implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public \App\Post $post;
+    public Post $post;
 
-    public \App\User $user;
+    public User $user;
 
     public string $postUrl;
 
@@ -27,7 +29,7 @@ class PostUpdated implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct(\App\Post $post, \App\User $user)
+    public function __construct(Post $post, User $user)
     {
         $this->post = $post;
         $this->user = $user;
@@ -38,7 +40,7 @@ class PostUpdated implements ShouldBroadcast
     /**
      * Get the channels the event should broadcast on.
      *
-     * @return \Illuminate\Broadcasting\Channel|array
+     * @return Channel|array
      */
     public function broadcastOn()
     {

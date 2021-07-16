@@ -2,11 +2,10 @@
 
 namespace App\Console\Commands;
 
-use App\Post;
-use App\User;
+use App\Models\Post;
+use App\Models\User;
+use App\Notifications\NotifyAboutNewPostsCommandGiven;
 use Illuminate\Console\Command;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Collection;
 
 class NotifyAboutNewPosts extends Command
 {
@@ -39,14 +38,14 @@ class NotifyAboutNewPosts extends Command
      *
      * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         $users = User::get('email');
         $posts = Post::where('published', 1)
             ->whereDate('created_at', '>', now()->subDays($this->argument('days'))->toDateString())
             ->get();
         foreach ($users as $user) {
-            $user->notify(new \App\Notifications\NotifyAboutNewPostsCommandGiven($posts, $this->argument('days')));
+            $user->notify(new NotifyAboutNewPostsCommandGiven($posts, $this->argument('days')));
         }
 
     }

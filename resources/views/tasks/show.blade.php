@@ -15,7 +15,10 @@
         <ul class="list-group">
             @foreach($task->steps as $step)
                 <li class="list-group-item">
-                    <form method="POST" action="/completed-steps/{{ $step->id }}">
+                    <form
+                            method="POST"
+                            action="{{ route('step.' . ($step->completed ? 'incomplete' : 'complete'), ['step' => $step, 'task' => $task]) }}"
+                    >
                         @if ($step->completed)
                             @method('DELETE')
                         @endif

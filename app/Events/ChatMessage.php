@@ -2,22 +2,21 @@
 
 namespace App\Events;
 
-use App\User;
+use App\Models\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class ChatMessage implements ShouldBroadcast // также реализуем интерфейс
+class ChatMessage implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $message;
+    public string $message;
 
-    public $user;
+    public User $user;
 
     public function __construct($message, User $user)
     {
@@ -28,10 +27,10 @@ class ChatMessage implements ShouldBroadcast // также реализуем и
     /**
      * Get the channels the event should broadcast on.
      *
-     * @return \Illuminate\Broadcasting\Channel|array
+     * @return Channel|array
      */
-    public function broadcastOn()
+    public function broadcastOn(): Channel|array
     {
-        return new PresenceChannel('chat'); // уже используем класс PresenceChannel
+        return new PresenceChannel('chat');
     }
 }

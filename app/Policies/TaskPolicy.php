@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\Task;
-use App\User;
+use App\Models\Task;
+use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class TaskPolicy
@@ -13,8 +13,8 @@ class TaskPolicy
     /**
      * Determine whether the user can update the model.
      *
-     * @param  \App\User  $user
-     * @param  \App\Task  $task
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Task  $task
      * @return mixed
      */
     public function update(User $user, Task $task)

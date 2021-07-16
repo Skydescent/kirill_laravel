@@ -8,7 +8,7 @@
             Список статей
         </h3>
         @foreach($posts as $post)
-            @include('posts.item')
+            @include('posts.item', ['user' => $user])
         @endforeach
 
         {{$posts->links()}}

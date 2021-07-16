@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Service\Pushall;
 use Illuminate\Support\ServiceProvider;
 
 class PushAllServiceProvider extends ServiceProvider
@@ -14,8 +15,8 @@ class PushAllServiceProvider extends ServiceProvider
     public function register()
     {
 
-        $this->app->singleton(\App\Service\Pushall::class, function() {
-            return new \App\Service\Pushall(config('kirill.pushall.api.key'), config('kirill.pushall.api.id'));
+        $this->app->singleton(Pushall::class, function() {
+            return new Pushall(config('kirill.pushall.api.key'), config('kirill.pushall.api.id'));
         });
     }
 

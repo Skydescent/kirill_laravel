@@ -1,5 +1,41 @@
 <?php
 
+use App\Models\Comment;
+use App\Models\Company;
+use App\Models\Feedback;
+use App\Http\Controllers\Admin\NewsController as AdminNewsController;
+use App\Http\Controllers\Admin\PostsController as AdminPostsController;
+use App\Http\Controllers\Public\CompletedTaskStepsController;
+use App\Http\Controllers\Public\FeedbacksController;
+use App\Http\Controllers\Public\NewsCommentsController;
+use App\Http\Controllers\Public\NewsController as PublicNewsController;
+use App\Http\Controllers\Public\PostCommentsController;
+use App\Http\Controllers\Public\PostsController as PublicPostsController;
+use App\Http\Controllers\Public\StatisticsController;
+use App\Http\Controllers\Public\TagsController;
+use App\Http\Controllers\Public\TasksController;
+use App\Http\Controllers\Public\TaskStepsController;
+use App\Models\News;
+use App\Models\Post;
+use App\Models\PostHistory;
+use App\Service\AdminServiceable;
+use App\Service\CommentsInterface;
+use App\Service\Eloquent\CommentsService;
+use App\Service\Eloquent\FeedbacksService;
+use App\Service\Eloquent\NewsService;
+use App\Service\Eloquent\PostsService;
+use App\Service\Indexable;
+use App\Service\Serviceable;
+use App\Service\StatisticsService;
+use App\Service\StepsInterface;
+use App\Service\Eloquent\StepsService;
+use App\Service\Eloquent\SyncTagsService;
+use App\Service\TagsInterface;
+use App\Service\Eloquent\TasksService;
+use App\Models\Step;
+use App\Models\Tag;
+use App\Models\Task;
+use App\Models\User;
 use Illuminate\Support\Str;
 
 return [
@@ -102,3 +138,4 @@ return [
     'prefix' => env('CACHE_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_cache'),
 
 ];
+

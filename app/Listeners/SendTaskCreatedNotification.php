@@ -3,8 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\TaskCreated;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
+use Mail;
 
 class SendTaskCreatedNotification
 {
@@ -16,7 +15,7 @@ class SendTaskCreatedNotification
      */
     public function handle(TaskCreated $event)
     {
-        \Mail::to($event->task->owner->email)->send(
+        Mail::to($event->task->owner->email)->send(
             new \App\Mail\TaskCreated($event->task)
         );
     }

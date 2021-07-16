@@ -2,7 +2,7 @@
 
 namespace App\Events;
 
-use App\Post;
+use App\Models\Post;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 

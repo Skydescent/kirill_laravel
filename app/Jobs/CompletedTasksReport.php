@@ -2,19 +2,22 @@
 
 namespace App\Jobs;
 
-use App\User;
+use App\Models\Step;
+use App\Models\Task;
+use App\Models\User;
+use Exception;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Log;
 
 class CompletedTasksReport implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $owner;
+    protected User $owner;
 
     /**
      * Create a new job instance.
@@ -33,13 +36,13 @@ class CompletedTasksReport implements ShouldQueue
      */
     public function handle()
     {
-        $tasksCount = \App\Task::when(null !== $this->owner, function ($query) {
+        $tasksCount = Task::when(null !== $this->owner, function ($query) {
             $query->when('owner_id', $this->owner->id);
         })
             ->completed() //должен быть scope
             ->count()
         ;
-        $stepsCount = \App\Step::when(null !== $this->owner, function ($query) {
+        $stepsCount = Step::when(null !== $this->owner, function ($query) {
             $query->whereHas('owner', function ($query) {
                 $query->where('users.id', '=', $this->owner->id);
             });
@@ -51,8 +54,8 @@ class CompletedTasksReport implements ShouldQueue
         echo ($this->owner ? $this->owner->name : 'Всего') . ": Выполненных шагов: $stepsCount, Выполненных задач: $tasksCount";
     }
 
-    public function failed(\Exception $exception)
+    public function failed(Exception $exception)
     {
-        \Log::error($exception->getMessage());
+        Log::error($exception->getMessage());
     }
 }

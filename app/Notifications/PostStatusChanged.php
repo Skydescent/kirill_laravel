@@ -3,7 +3,6 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
@@ -11,11 +10,11 @@ class PostStatusChanged extends Notification
 {
     use Queueable;
 
-    public $postTitle;
+    public string $postTitle;
 
-    public $postUri;
+    public ?string $postUri;
 
-    public $status;
+    public string $status;
 
     /**
      * Create a new notification instance.
@@ -37,7 +36,7 @@ class PostStatusChanged extends Notification
      * @param  mixed  $notifiable
      * @return array
      */
-    public function via($notifiable)
+    public function via(mixed $notifiable): array
     {
         return ['mail'];
     }
@@ -46,16 +45,16 @@ class PostStatusChanged extends Notification
      * Get the mail representation of the notification.
      *
      * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
+     * @return MailMessage
      */
-    public function toMail($notifiable)
+    public function toMail(mixed $notifiable): MailMessage
     {
         $mailMessage = new MailMessage();
 
         $mailMessage
             ->greeting('Здравствуйте!')
-            ->subject("В блоге {$this->status}")
-            ->line("В блоге {$this->status}: {$this->postTitle}");
+            ->subject("В блоге $this->status")
+            ->line("В блоге $this->status: $this->postTitle");
 
         if (!is_null($this->postUri)) {
             $mailMessage->action('Смотреть', url($this->postUri));
@@ -71,7 +70,7 @@ class PostStatusChanged extends Notification
      * @param  mixed  $notifiable
      * @return array
      */
-    public function toArray($notifiable)
+    public function toArray(mixed $notifiable): array
     {
         return [
             //

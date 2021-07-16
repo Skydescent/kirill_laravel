@@ -2,8 +2,13 @@
 
 namespace App\Http\Requests;
 
+use App\Contracts\Repository\PostRepositoryContract;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * @property mixed slug
+ */
 class PostStoreAndUpdateRequest extends FormRequest
 {
     /**
@@ -11,15 +16,17 @@ class PostStoreAndUpdateRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
+
         if ($this->user()->isAdmin() && !$this->slug) {
             return ['published'=>''];
         }
         $slugRule = 'required|regex:/^[a-z0-9-_]+$/i|unique:posts';
 
         if ($this->route()->hasParameter('post')) {
-            $slugRule .= ',slug,' . $this->route('post')->id;
+
+            $slugRule .= ',slug,' . $this->getPostId($this->post);
         }
 
         return [
@@ -28,8 +35,19 @@ class PostStoreAndUpdateRequest extends FormRequest
             'short_text' => 'required|max:255',
             'body' => 'required',
             'published' => '',
-            'tags' => ''
+            'tags' => '',
+            'owner_id' => '',
         ];
 
+    }
+
+    /**
+     * @throws BindingResolutionException
+     */
+    private function getPostId($slug)
+    {
+        return app()
+            ->make(PostRepositoryContract::class)
+            ->find($slug)->id;
     }
 }

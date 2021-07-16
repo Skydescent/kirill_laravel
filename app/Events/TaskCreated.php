@@ -4,7 +4,7 @@ namespace App\Events;
 
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use App\Task;
+use App\Models\Task;
 
 class TaskCreated
 {

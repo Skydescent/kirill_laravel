@@ -4,6 +4,8 @@
 namespace App\Service;
 
 
+use GuzzleHttp\Client;
+
 class Pushall
 {
     private $id;
@@ -27,7 +29,7 @@ class Pushall
             'title' => $title
         ];
 
-        $client = new \GuzzleHttp\Client();
+        $client = new Client();
         return $client->post( $this->url, ['form_params' => $data]);
 
     }

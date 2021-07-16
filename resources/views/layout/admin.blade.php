@@ -8,7 +8,7 @@
         </div>
         <post-update></post-update>
         <report-generated
-                user-id="{{ auth()->user()->id }}"
+                user-id="{{ getUserId() }}"
                 accepted-url="{{route('admin.reports.index')}}"
         ></report-generated>
     </main>

@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
-use App\Comment;
-use App\User;
-use App\Post;
+use App\Models\Comment;
+use App\Models\User;
+use App\Models\Post;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CommentFactory extends Factory
@@ -24,8 +24,8 @@ class CommentFactory extends Factory
     public function definition(): array
     {
         $commentable = [
-            \App\Post::class,
-            \App\News::class,
+            \App\Models\Post::class,
+            \App\Models\News::class,
         ];
         $class = $this->faker->randomElement($commentable);
         $alias = (new $class())->getMorphClass();

@@ -177,6 +177,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\TelescopeServiceProvider::class,
         App\Providers\PushAllServiceProvider::class,
+        App\Providers\RepositoryServiceProvider::class,
 
         /*
          * Laravel IDE helper

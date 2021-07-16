@@ -3,7 +3,6 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Collection;
@@ -12,9 +11,9 @@ class NotifyAboutNewPostsCommandGiven extends Notification
 {
     use Queueable;
 
-    private $posts;
+    private Collection $posts;
 
-    private  $days;
+    private int $days;
 
     /**
      * Create a new notification instance.
@@ -22,7 +21,7 @@ class NotifyAboutNewPostsCommandGiven extends Notification
      * @param Collection $posts
      * @param $days
      */
-    public function __construct(Collection $posts, $days)
+    public function __construct(Collection $posts, int $days)
     {
         $this->posts = $posts;
         $this->days = $days;
@@ -34,7 +33,7 @@ class NotifyAboutNewPostsCommandGiven extends Notification
      * @param  mixed  $notifiable
      * @return array
      */
-    public function via($notifiable)
+    public function via(mixed $notifiable): array
     {
         return ['mail'];
     }
@@ -43,9 +42,9 @@ class NotifyAboutNewPostsCommandGiven extends Notification
      * Get the mail representation of the notification.
      *
      * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
+     * @return MailMessage
      */
-    public function toMail($notifiable)
+    public function toMail(mixed $notifiable): MailMessage
     {
         return (new MailMessage)
             ->subject("Подборка статей за последние {$this->days} дней")
@@ -58,14 +57,14 @@ class NotifyAboutNewPostsCommandGiven extends Notification
      * @param  mixed  $notifiable
      * @return array
      */
-    public function toArray($notifiable)
+    public function toArray(mixed $notifiable)
     {
         return [
             //
         ];
     }
 
-    public function receivesBroadcastNotificationOn()
+    public function receivesBroadcastNotificationOn(): string
     {
         return 'users.' . $this->id;
     }

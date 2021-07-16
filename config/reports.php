@@ -8,23 +8,23 @@ return [
             'reportable' => [
                 'users' => [
                     'title' => 'Пользователей',
-                    'data' => \App\User::class,
+                    'data' => \App\Models\User::class,
                 ],
                 'posts' => [
                     'title' => 'Статей',
-                    'data' => \App\Post::class,
+                    'data' => \App\Models\Post::class,
                 ],
                 'news' => [
                     'title' => 'Новостей',
-                    'data' => \App\News::class
+                    'data' => \App\Models\News::class
                 ],
                 'comments' => [
                     'title' => 'Комментариев',
-                    'data' => \App\Comment::class
+                    'data' => \App\Models\Comment::class
                 ],
                 'tags' => [
                     'title' => 'Тэгов',
-                    'data' => \App\Tag::class,
+                    'data' => \App\Models\Tag::class,
                 ],
             ],
         ]

@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Step;
-use App\Task;
-use App\User;
+use App\Models\Step;
+use App\Models\Task;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class TasksToUserSeeder extends Seeder
@@ -27,7 +27,7 @@ class TasksToUserSeeder extends Seeder
         Task::factory()
             ->times(5)
             ->create(['owner_id' => $user]) // в атрибутах первый пользователь
-            ->each(function (\App\Task $task) {
+            ->each(function (\App\Models\Task $task) {
                 $task->steps()->saveMany(Step::factory()->times(rand(1, 5))->make());
             });
     }

@@ -2,11 +2,11 @@
 
 namespace Database\Factories;
 
-use App\News;
-use App\Post;
-use App\Tag;
-use App\Task;
-use App\User;
+use App\Models\News;
+use App\Models\Post;
+use App\Models\Tag;
+use App\Models\Task;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class TagFactory extends Factory

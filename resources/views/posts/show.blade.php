@@ -21,6 +21,7 @@
     @auth
         @include('comments.create', ['action' => route('post.comments.store', ['post' => $post])])
     @endauth
+
     @include('comments.index', ['model' => $post])
     <hr>
     @forelse($post->history as $item)

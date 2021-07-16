@@ -8,7 +8,7 @@
             ])
             <div class="mb-1 text-muted">{{ $post->created_at->toFormattedDateString() }}</div>
             <p class="card-text mb-auto">{{ $post->short_text }}</p>
-            @admin(Auth::user())
+            @admin($user)
                 <h5>
                     <a href="{{ route('admin.posts.edit', ['post' => $post]) }}" class="badge badge-success">Редактировать</a>
                 </h5>

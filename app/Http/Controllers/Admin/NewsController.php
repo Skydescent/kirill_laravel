@@ -2,31 +2,30 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Contracts\Service\News\CreateNewsServiceContract;
+use App\Contracts\Service\News\DestroyNewsServiceContract;
+use App\Contracts\Repository\NewsRepositoryContract;
+use App\Contracts\Service\News\UpdateNewsServiceContract;
 use App\Http\Requests\NewsStoreAndUpdateRequest;
-use App\News;
-use App\Service\NewsService;
+use App\Models\News;
 use Exception;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
-class NewsController extends Controller
+class NewsController
 {
-    private $newsService;
-
-    public function __construct(NewsService $newsService)
-    {
-        $this->newsService = $newsService;
-    }
 
     /**
      * Display a listing of the resource.
      *
+     * @param NewsRepositoryContract $repository
      * @return View
      */
-    public function index()
+    public function index(NewsRepositoryContract $repository): View
     {
-        $news = News::latest()->paginate(20);
+        $currentPage = request()->get('page',1);
+        $news = $repository->getAdminNews(10,$currentPage);
 
         return view('admin.news.index', compact( 'news'));
     }
@@ -36,7 +35,7 @@ class NewsController extends Controller
      *
      * @return View
      */
-    public function create()
+    public function create(): View
     {
         $news = new News();
         return view('admin.news.create', compact('news'));
@@ -45,55 +44,65 @@ class NewsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  NewsStoreAndUpdateRequest $request
+     * @param NewsStoreAndUpdateRequest $request
+     * @param CreateNewsServiceContract $createNewsService
      * @return RedirectResponse
-     * @throws Exception
      */
-    public function store(NewsStoreAndUpdateRequest $request) : RedirectResponse
+    public function store(
+        NewsStoreAndUpdateRequest $request,
+        CreateNewsServiceContract $createNewsService
+    ) : RedirectResponse
     {
-        $this->newsService
-            ->setNews(new News())
-            ->storeOrUpdate($request->validated());
+        $createNewsService->create($request->validated());
         return redirect()->route('admin.news.index');
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  News  $news
+     * @param NewsRepositoryContract $repository
+     * @param $slug
      * @return View
      */
-    public function edit(News $news) : View
+    public function edit(NewsRepositoryContract $repository, $slug) : View
     {
+        $news = $repository->find($slug);
         return view('admin.news.edit', compact('news'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  NewsStoreAndUpdateRequest  $request
-     * @param  News $news
+     * @param NewsStoreAndUpdateRequest $request
+     * @param UpdateNewsServiceContract $updateNewsService
+     * @param $slug
      * @return RedirectResponse
-     * @throws Exception
      */
-    public function update(NewsStoreAndUpdateRequest $request, News $news)
+    public function update(
+        NewsStoreAndUpdateRequest $request,
+        UpdateNewsServiceContract $updateNewsService,
+        $slug
+    ): RedirectResponse
     {
-        $this->newsService
-            ->setNews($news)
-            ->storeOrUpdate($request->validated());
+        $updateNewsService->update($request->validated(), ['slug' => $slug]);
+
+        flash('Новость успешно обновлена!');
+
         return redirect()->route('admin.news.index');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param News $news
+     * @param DestroyNewsServiceContract $destroyNewsService
+     * @param $slug
      * @return RedirectResponse
-     * @throws Exception
      */
-    public function destroy(News $news)
+    public function destroy(DestroyNewsServiceContract $destroyNewsService, $slug): RedirectResponse
     {
-        $news->delete();
+        $destroyNewsService->delete($slug);
+
+        flash('Статья удалена!', 'warning');
         return redirect()->route('admin.news.index');
     }
 }

@@ -15,7 +15,7 @@
             @csrf
 
             @include('posts.createOrUpdate', [
-                'post' => new \App\Post(),
+                'post' => new \App\Models\Post(),
                 'btnText' => 'Создать',
             ])
         </form>

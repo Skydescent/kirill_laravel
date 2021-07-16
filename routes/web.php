@@ -2,42 +2,23 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('test', function () {
-    // Использование тэгов кэша
-    Cache::tags(['people', 'artists'])->put('John', $john, $seconds);
-    Cache::tags(['people', 'authors'])->put('Anna', $anna, $seconds);
+Route::get('/', 'Public\PostsController@index');
+Route::get('/statistics', 'Public\StatisticsController@index')->name('statistics.index');
 
-    // Чтобы получить ключи тэги обязательно использовать
-    Cache::tags(['people', 'artists'])->get('John');
-    Cache::tags(['people', 'authors'])->get('Anna');
+Route::get('/tags/{tag}', 'Public\TagsController@index')->name('tags.cloud');
+Route::resource('/tasks', 'Public\TasksController');
 
-    //Чтобы два раза не писать одно и то же, можено использовать метод remember
-    $john = Cache::tags(['people', 'artists'])->remember('John', $john, $seconds);
-
-    //Сбрасываем кэш по тэгам:
-    Cache::tags(['people', 'artists'])->flush(); // сбросит кэш и для John и для Anna
-    Cache::tags(['artists'])->flush(); //сбросит только Anna
-
-});
-
-Route::get('/', 'PostsController@index');
-Route::get('/statistics', 'StatisticsController@index')->name('statistics.index');
-
-Route::get('/tags/{tag}', 'TagsController@index')->name('tags.cloud');
-Route::resource('/tasks', 'TasksController');
-
-Route::post('/tasks/{task}/steps', 'TaskStepsController@store');
-Route::post('/completed-steps/{step}', 'CompletedStepsController@store');
-Route::delete('/completed-steps/{step}', 'CompletedStepsController@destroy');
+Route::post('/tasks/{task}/steps', 'Public\TaskStepsController@store');
+Route::post('/completed-steps/{step}/{task}', 'Public\CompletedTaskStepsController@store')->name('step.complete');
+Route::delete('/completed-steps/{step}/{task}', 'Public\CompletedTaskStepsController@destroy')->name('step.incomplete');
 
 
-Route::resource('/posts', 'PostsController');
-Route::resource('/news', 'NewsController')->only('index','show');
+Route::resource('/posts', 'Public\PostsController');
+Route::resource('/news', 'Public\NewsController')->only('index','show');
 
 Route::view('/about', 'about')->name('about');
-Route::get('/contacts', 'FeedbacksController@create')->name('feedbacks.create');
-//Route::get('/feedbacks','FeedbacksController@index')->name('feedbacks.index');
-Route::post('/feedbacks','FeedbacksController@store')->name('feedbacks.store');
+Route::get('/contacts', 'Public\FeedbacksController@create')->name('feedbacks.create');
+Route::post('/feedbacks','Public\FeedbacksController@store')->name('feedbacks.store');
 Route::get('/greeting', function () {
     return 'Hello World';
 });
@@ -49,7 +30,7 @@ Route::group([
 ], function () {
     Route::resource('/posts', 'Admin\PostsController')->only('index', 'update', 'edit', 'destroy');
     Route::resource('/news', 'Admin\NewsController');
-    Route::get('/feedbacks','FeedbacksController@index')->name('feedbacks.index');
+    Route::get('/feedbacks','Public\FeedbacksController@index')->name('feedbacks.index');
     Route::get('/reports', 'Admin\ReportsController@index')->name('reports.index');
     Route::get('/reports/{report}', 'Admin\ReportsController@make')->name('reports.make');
     Route::get('/send_report/{report}', 'Admin\ReportsController@sendReport')->name('reports.send');
@@ -60,24 +41,24 @@ Auth::routes();
 
 Route::middleware('auth')->post('/companies', function () {
     $attributes = request()->validate(['name' => 'required']);
-    $attributes['owner_id'] = auth()->id();
+    $attributes['owner_id'] = getUserId();
 
-    \App\Company::create($attributes);
+    \App\Models\Company::create($attributes);
 });
 
-Route::get('/service', 'PushServiceController@form');
-Route::post('/service', 'PushServiceController@send');
+Route::get('/service', 'Public\PushServiceController@form');
+Route::post('/service', 'Public\PushServiceController@send');
 
 Route::middleware('auth')
-    ->post('/posts/{post}/comment', 'PostCommentsController@store')
+    ->post('/posts/{post}/comment', 'Public\CommentsController@storePostComment')
     ->name('post.comments.store');
 
 Route::middleware('auth')
-    ->post('/news/{news}/comment', 'NewsCommentsController@store')
+    ->post('/news/{news}/comment', 'Public\CommentsController@storeNewsComment')
     ->name('news.comments.store');
 
 Route::post('/chat', function () {
-    broadcast(new \App\Events\ChatMessage(request('message'), auth()->user()))->toOthers();
+    broadcast(new \App\Events\ChatMessage(request('message'), cachedUser()))->toOthers();
 })->middleware('auth');
 
 Route::get('/send', function () {

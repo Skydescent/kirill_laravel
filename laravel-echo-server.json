@@ -1,5 +1,5 @@
 {
-	"authHost": "http://kirill-laravel",
+	"authHost": "http://kirill.laravel",
 	"authEndpoint": "/broadcasting/auth",
 	"clients": [
 		{

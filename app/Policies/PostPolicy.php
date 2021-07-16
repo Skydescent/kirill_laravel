@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\Post;
-use App\User;
+use App\Models\Post;
+use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class PostPolicy
@@ -13,8 +13,8 @@ class PostPolicy
     /**
      * Determine whether the user can update the model.
      *
-     * @param  \App\User  $user
-     * @param  \App\Post  $post
+     * @param  User  $user
+     * @param  Post $post
      * @return mixed
      */
     public function update(User $user, Post $post)
@@ -25,9 +25,9 @@ class PostPolicy
     /**
      * Determine whether the user can view the model.
      *
-     * @param  \App\User  $user
-     * @param  \App\Post  $post
-     * @return mixed
+     * @param User|null $user
+     * @param Post $post
+     * @return bool
      */
     public function view(?User $user, Post $post)
     {

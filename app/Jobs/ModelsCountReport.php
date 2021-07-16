@@ -2,21 +2,21 @@
 
 namespace App\Jobs;
 
-use App\User;
+use App\Events\ReportGenerated as EventReportGenerated;
+use App\Mail\ReportGenerated as MailReportGenerated;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Auth;
+use Mail;
 
 class ModelsCountReport implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
 
-    protected $data;
+    protected array $data;
 
     /**
      * Create a new job instance.
@@ -42,10 +42,10 @@ class ModelsCountReport implements ShouldQueue
                 'value' => $field['data']::count(),
             ];
         }
-        event(new \App\Events\ReportGenerated($report, $this->data['user']));
+        event(new EventReportGenerated($report, $this->data['user']));
 
-        \Mail::to($this->data['user']->email)->send(
-            new \App\Mail\ReportGenerated($report)
+        Mail::to($this->data['user']->email)->send(
+            new MailReportGenerated($report)
         );
     }
 }
